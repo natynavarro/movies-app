@@ -6,15 +6,8 @@ import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
-
-/**
- * Created with IntelliJ IDEA.
- * User: natalianavarro
- * Date: 10/16/14
- * Time: 6:10 PM
- * To change this template use File | Settings | File Templates.
- */
-
+import java.util.List;
+import java.util.UUID;
 
 public class MovieListTest {
 
@@ -33,7 +26,57 @@ public class MovieListTest {
     @Test
     public void sizeAfterAddingOneMovie() throws Exception{
         Movie starWars = new Movie("Star Wars");
-        movieList.add(starWars);
+        movieList.addOrUpdate(starWars);
         assertThat(movieList.size(), is(1));
+    }
+
+    @Test
+    public void sizeAfterAddingTwoMovies() throws Exception{
+        Movie starWars = new Movie("Star Wars");
+        Movie titanic = new Movie("Titanic");
+        movieList.addOrUpdate(starWars);
+        movieList.addOrUpdate(titanic);
+        assertThat(movieList.size(), is(2));
+    }
+
+    @Test
+    public void containsMovie() throws Exception{
+        Movie starWars = new Movie("Star Wars");
+        Movie titanic = new Movie("Titanic");
+        Movie cars = new Movie("Cars");
+        movieList.addOrUpdate(starWars);
+        movieList.addOrUpdate(titanic);
+        assertThat(movieList.contains(starWars), is(true));
+        assertThat(movieList.contains(titanic), is(true));
+        assertThat(movieList.contains(cars), is(false));
+    }
+
+    @Test
+    public void movieList() throws Exception{
+        Movie starWars = new Movie("Star Wars");
+        Movie titanic = new Movie("Titanic");
+        movieList.addOrUpdate(starWars);
+        movieList.addOrUpdate(titanic);
+        List<Movie> theList = movieList.list();
+        assertThat(theList.get(0).getTitle(), is("Star Wars"));
+        assertThat(theList.get(1).getTitle(), is("Titanic"));
+    }
+
+    @Test
+    public void findById() throws Exception{
+        Movie starWars = new Movie("Star Wars");
+        movieList.addOrUpdate(starWars);
+        Movie found = movieList.findById(starWars.getId());
+
+        assertThat(found, is(not(nullValue())));
+        assertThat(found.getId(), is(starWars.getId()));
+    }
+
+    @Test
+    public void findByIdNotFound() throws Exception{
+        Movie notFound = movieList.findById(UUID.randomUUID());
+        assertThat(notFound, is(not(nullValue())));
+        assertThat(notFound.getId(), is(nullValue()));
+        assertThat(notFound.getTitle(), is(nullValue()));
     }
 }

@@ -1,28 +1,40 @@
 package com.videoshop.movies;
 
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: natalianavarro
- * Date: 10/16/14
- * Time: 6:55 PM
- * To change this template use File | Settings | File Templates.
- */
-public class MovieList{
+import java.util.*;
 
-    List<Movie> collection;
+public class MovieList {
+
+    private Map<UUID, Movie> movies;
 
     public MovieList(){
-        this.collection = new ArrayList<Movie>();
+        this.movies = new HashMap<>();
+    }
+
+    public void addOrUpdate(Movie movie){
+        if(null == movie.getId()){
+            UUID id = UUID.randomUUID();
+            movie.setId(id);
+        }
+        movies.put(movie.getId(), movie);
     }
 
     public int size(){
-        return this.collection.size();
+        return movies.size();
     }
 
-    public void add(Movie movie){
-        this.collection.add(movie);
+    public boolean contains(Movie movie){
+        return movies.containsKey(movie.getId());
     }
+
+    public List<Movie> list(){
+        List<Movie> movieList = new ArrayList<>(this.movies.values());
+        Collections.sort(movieList);
+        return movieList;
+    }
+
+    public Movie findById(UUID id){
+        return (this.movies.containsKey(id) ? this.movies.get(id) : new Movie());
+    }
+
 }
